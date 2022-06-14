@@ -1,0 +1,57 @@
+<html>
+<head>
+    <title>Maturity level prediction</title>
+    <meta charset="UTF-8">
+
+
+</head>
+<body>
+<div align="center">
+    <h1>Please upload image for prediction</h1>
+    <form action="http://52.36.229.33:5000/uploader" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" onchange="imgPreview(this)" accept=".png"/>
+        <br/>
+        <img id="preview"/>
+        <br/>
+        <input type="submit" value="Submit"/>
+    </form>
+</div>
+</body>
+<script type="text/javascript">
+    function imgPreview(fileDom){
+        // FileReader
+        if (window.FileReader) {
+            var reader = new FileReader();
+        } else {
+            alert("error");
+        }
+
+        //
+        var file = fileDom.files[0];
+        var imageType = /^image\//;
+        //
+        if (!imageType.test(file.type)) {
+            alert("please chose image！");
+            return;
+        }
+        // read
+        reader.onload = function(e) {
+            //get dom
+            var img = document.getElementById("preview");
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+</script>
+<style>
+    input{
+    outline-style: none ;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 14px 14px;
+    font-size: 24px;
+    margin-top: 10px;
+}
+</style>
+</html>
