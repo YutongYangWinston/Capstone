@@ -10,7 +10,7 @@ import numpy as np
 def get_predict(filename):
     model = torch.load('model.pth')
     transform = transforms.Compose([
-        transforms.Scale([64, 64]),  # Scale 64×64   Resize
+        transforms.Resize([64, 64]),  # Scale 64×64   Resize
         transforms.ToTensor()
     ])
     img = Image.open(f"./upload/{filename}").convert('RGB')
@@ -25,7 +25,7 @@ def get_predict(filename):
 if __name__ == '__main__':
     model = torch.load('model.pth')
     transform = transforms.Compose([
-        transforms.Scale([64, 64]),  # Scale 64×64
+        transforms.Resize([64, 64]),  # Scale 64×64
         transforms.ToTensor()
     ])
 
