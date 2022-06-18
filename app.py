@@ -18,7 +18,7 @@ from net import Net
 model= Net()
 model = torch.load('model.pth')
 transform = transforms.Compose([
-    transforms.Scale([64, 64]),  # Scale 64×64
+    transforms.Resize([64, 64]),  # Scale64×64
     transforms.ToTensor()
 ])
 app = Flask(__name__)
@@ -28,7 +28,7 @@ app.config["JSON_AS_ASCII"] = False
 app.config['UPLOAD_FOLDER'] = 'upload/'
 
 
-
+#convert - RGB
 def get_predict(filename):
     img = Image.open(f"./upload/{filename}").convert('RGB')
     img = transform(img)

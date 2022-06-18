@@ -1,3 +1,4 @@
+#Test file
 import torch
 from PIL import Image
 from torchvision import transforms
@@ -9,7 +10,7 @@ import numpy as np
 def get_predict(filename):
     model = torch.load('model.pth')
     transform = transforms.Compose([
-        transforms.Scale([64, 64]),  # Scale to 64×64
+        transforms.Scale([64, 64]),  # Scale 64×64   Resize
         transforms.ToTensor()
     ])
     img = Image.open(f"./upload/{filename}").convert('RGB')

@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
+from matplotlib import pyplot as plt
 import os
 data_dir = 'data'
 
@@ -63,7 +64,7 @@ if __name__ == '__main__':
     batch_size = 32
 
     transform = transforms.Compose([
-        transforms.Scale([64, 64]),
+        transforms.Resize([64, 64]),
         transforms.ToTensor()
     ])
 
@@ -89,7 +90,9 @@ if __name__ == '__main__':
     # opt
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
     loss_list = []
-    for epoch in range(10):
+    train_acc = []
+    test_acc = []
+    for epoch in range(40):
         print(f'epoch：{epoch}')
         for batch, (X, y) in enumerate(train_loader):
             y_pred = model(X.to(device))
@@ -102,27 +105,56 @@ if __name__ == '__main__':
             #
             optimizer.step()
             #
-            if batch % 50 == 0:
-                loss_list.append(loss.data.item())
-                print("train loss------------", loss.data.item())
-                # cal test accuracy
-                rets = []
-                total = 0
-                correct = 0
-                total
-                correct
-                with torch.no_grad():
-                    for data in test_loader:
-                        X, y = data
-                        y.to(device)
-                        y_pred = model(X.to(device))
-                        # max_val and  index
-                        _, predicted = torch.max(y_pred.data, dim=1)
-                        #predicted.to(device)
-                        total += y.size(0)
-                        correct += (predicted.to('cpu') == y).sum().item()
+        loss_list.append(loss.data.item())
+        print("train loss------------", loss.data.item())
+        # cal train accuracy
 
-                print('accuracy on test set: %.2f %% ' % (100.0 * (correct / total)))
+        # cal test accuracy
+        rets = []
+        total = 0
+        train_total = 0
+        correct = 0
+        train_correct = 0
+        with torch.no_grad():
+            for data in train_loader:
+                X, y = data
+                y.to(device)
+                y_pred = model(X.to(device))
+                # max_val and  index
+                _, predicted = torch.max(y_pred.data, dim=1)
+                #predicted.to(device)
+                train_total += y.size(0)
+                train_correct += (predicted.to('cpu') == y).sum().item()
+        train_acc.append(train_correct/train_total)
+        print('accuracy on train set: %.2f %% ' % (100.0 * (train_correct / train_total)))
+        with torch.no_grad():
+            for data in test_loader:
+                X, y = data
+                y.to(device)
+                y_pred = model(X.to(device))
+                # max_val and  index
+                _, predicted = torch.max(y_pred.data, dim=1)
+                #predicted.to(device)
+                total += y.size(0)
+                correct += (predicted.to('cpu') == y).sum().item()
+        test_acc.append(correct / total)
+        print('accuracy on test set: %.2f %% ' % (100.0 * (correct / total)))
+
+    print(train_acc)
+    print(test_acc)
+
     # save the model
     model.to('cpu')
     torch.save(model, 'model.pth')
+    # acc plot
+    acc_train = train_acc
+    acc_test = test_acc
+    plt.figure(dpi=200)
+    plt.plot(range(40), acc_train, label="train accuracy", marker='o')
+    # plt.scatter(range(40),acc_train,label="train accuracy")
+    plt.plot(range(40), acc_test, label="val accuracy", marker='o')
+    # plt.scatter(range(40),acc_train,label="train accuracy")
+    plt.xlabel("Epoch")
+    plt.ylabel("Accuracy")
+    plt.legend()
+    plt.show()

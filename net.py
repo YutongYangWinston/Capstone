@@ -1,5 +1,7 @@
+#Author: Yutong Yang
+#16/06/2022
+#VGGnet
 import torch
-
 
 class Net(torch.nn.Module):
 
@@ -32,7 +34,7 @@ class Net(torch.nn.Module):
                                         torch.nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1),
                                         torch.nn.ReLU(),
                                         torch.nn.MaxPool2d(kernel_size=2, stride=2))
-
+#Fully connected layer
         self.Classes = torch.nn.Sequential(torch.nn.Linear(4 * 4 * 512, 1024),
                                            torch.nn.ReLU(),
                                            torch.nn.Dropout(p=0.5),
@@ -40,6 +42,7 @@ class Net(torch.nn.Module):
                                            torch.nn.ReLU(),
                                            torch.nn.Dropout(p=0.5),
                                            torch.nn.Linear(1024, 3))
+
 
     def forward(self, input):
         x = self.Conv(input)
